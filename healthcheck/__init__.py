@@ -189,7 +189,10 @@ class EnvironmentDump(object):
     def safe_dump(self, dictionary):
         result = {}
         for key in dictionary.keys():
-            if 'key' in key.lower() or 'token' in key.lower() or 'pass' in key.lower():
+            if type(dictionary[key]) is dict:
+                dictionary[key] = self.safe_dump(dictionary[key])
+                result[key] = dictionary[key]
+            elif 'key' in key.lower() or 'token' in key.lower() or 'pass' in key.lower() or 'secret' in key.lower():
                 # Try to avoid listing passwords and access tokens or keys in the output
                 result[key] = "********"
             else:
